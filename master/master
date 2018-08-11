@@ -14,3 +14,4 @@ file_roots:
     base:
         - /srv/salt
 auto_accept: True
+log_level: debug

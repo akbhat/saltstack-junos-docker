@@ -1,2 +1,4 @@
-master: 172.30.52.248
+master: salt
 id: minion1
+log_level: debug
+

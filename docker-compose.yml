@@ -1,0 +1,41 @@
+version: "2"
+services: 
+  request_tracker:
+    image: netsandbox/request-tracker
+    container_name: request_tracker
+    ports:
+      - "9081:80"
+    networks:
+      - salt
+  gitlab:
+    image: gitlab/gitlab-ce
+    container_name: gitlab
+    ports:
+      - "9080:80"
+      - "3022:22" 
+    networks:
+      - salt
+  master:
+    image: saltmaster-junossyslog
+    container_name: salt 
+    hostname: salt
+    privileged: true
+    ports:
+      - "516:516/udp"
+    tty: true
+    networks:
+      - salt
+  minion1:
+    image: saltminion-junossyslog 
+    container_name: minion1
+    hostname: minion1
+    privileged: true
+    command: /usr/bin/start 
+    tty: true
+    networks:
+      - salt
+    depends_on:
+      - "master"
+networks:
+  salt:
+    driver: bridge
