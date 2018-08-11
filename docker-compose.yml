@@ -30,7 +30,7 @@ services:
     container_name: minion1
     hostname: minion1
     privileged: true
-    command: /usr/bin/start 
+    #command: /usr/bin/start 
     tty: true
     networks:
       - salt
