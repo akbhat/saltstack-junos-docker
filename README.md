@@ -97,16 +97,6 @@ Docker version 18.03.1-ce, build 9ee9f40
 git clone https://github.com/ksator/saltstack-junos-docker.git
 cd saltstack-junos-docker
 ```
-## Update the variables 
-```
-vi variables.yml
-```
-## Run this script 
-It will use your variables to create saltstack files (pillars, minion and proxy configurartion files, ...) 
-
-```
-python render.py
-```
 
 ## Create a docker image for the master
 It will include the Junos syslog engine dependencies 
@@ -118,18 +108,7 @@ Verify
 ```
 docker images
 ```
-## Instanciate a docker container for the master 
-```
-docker run -d -t --rm --name master -p 516:516/udp -p 4505:4505 -p 4506:4506 saltmaster-junossyslog 
-```
-Alternatively you can run this command (so the container wont be automatically deleted if you stop it)
-```
-docker run -d -t --name master -p 516:516/udp -p 4505:4505 -p 4506:4506 saltmaster-junossyslog 
-```
-Verify
-```
-docker ps
-```
+
 
 ## Create a docker image for the minion
 It will include the junos modules dependencies
@@ -141,34 +120,33 @@ Verify
 ```
 docker images
 ```
-## Instanciate a docker container for the minion
+## Instantiate a master and minion containers
 ```
-docker run -d -t --rm --name minion1 -p 4605:4505 -p 4606:4506 saltminion-junosproxy
+docker-compose up -d
 ```
-Alternatively you can run this command (so the container wont be automatically deleted if you stop it)
-```
-docker run -d -t --name minion1 -p 4605:4505 -p 4606:4506 saltminion-junosproxy
-```
-Verify: 
-```
-docker ps
-```
+
 ## How to connect to a container cli? 
-If you want to connect to a container cli, run these commands: 
+Connect to a master container cli and run these commands: 
 ```
 docker exec -it master bash
-exit
+
 ```
+## Update the variables 
+```
+vi /srv/templates/variables.yml
+```
+## Run this script 
+It will use your variables to create saltstack files (pillars, minion and proxy configurartion files, ...) 
+
+```
+python render.py
+```
+Connect to a minion container cli if needed: 
 ```
 docker exec -it minion1 bash
 exit
 ```
-## Start the salt service
-Run these commands to start the salt service
-```
-docker exec -it master service salt-master start
-docker exec -it minion1 service salt-minion start
-```
+
 ## Verify the setup works
 ```
 docker exec -it master salt-key -L
@@ -192,4 +170,3 @@ docker exec -it master bash
 salt-run state.event pretty=True
 ```
 ssh the junos device and commit a configuration change and watch the event bus on the master
-
