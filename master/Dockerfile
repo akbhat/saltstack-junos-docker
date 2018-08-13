@@ -8,7 +8,11 @@ RUN apt-get update && \
     echo 'deb http://repo.saltstack.com/apt/debian/9/amd64/archive/2018.3.2 stretch main' > /etc/apt/sources.list.d/saltstack.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends salt-master salt-minion salt-cloud && \
-    apt-get remove -y wget && \
+    apt-get remove -y wget
+    
+RUN pip install --upgrade setuptools
+RUN pip install wheel && \
+    pip install pyOpenSSL junos-eznc jxmlease jsnapy && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /srv/pillar /srv/salt
@@ -24,4 +28,3 @@ RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
 CMD service salt-master start && service salt-minion start && bash
-
